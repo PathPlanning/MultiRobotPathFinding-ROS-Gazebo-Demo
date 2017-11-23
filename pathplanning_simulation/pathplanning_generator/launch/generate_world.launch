@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+  <node name="$(anon pathplanning_generator-1)" pkg="pathplanning_generator" type="world_generator.py" output="screen">
+  </node>
+</launch>
