@@ -133,7 +133,7 @@ class square:
 
         ros_package = rospkg.RosPack()
         mover_directory = ros_package.get_path("pathplanning_mover2")
-        directory = os.path.join(mover_directory, "commands/", self.robot + '.csv')
+        directory = os.path.join(mover_directory, "src/commands/", self.robot + '.csv')
         print directory
         # Tут почему-то падает без исключительных ситуаций. Работало раньше.
         # Нужно детальное тестирование.
