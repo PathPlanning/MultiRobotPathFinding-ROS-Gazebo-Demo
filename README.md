@@ -1,51 +1,111 @@
-**ГЕНЕРАЦИЯ ОКРУЖЕНИЯ И РАССЕЛЕНИЕ АГЕНТОВ ИЗ ЛОГА**
-=====================================================================================================
-На данный момент:
+**pathplanning_simulation**
+================================================================================================================================
+# Installing prerequisites
 
-	- реализована генерация .world и .launch из предоставленного лога
-	- запуск сгенерированных .world и .launch
-	- генерация входных данных для скрипта управления роботами
+### 1. Install ROS Kinetic
 
-***	
+```bash
+$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+```
+```bash
+$ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+```
+```bash
+$ sudo apt-get update
+```
+```bash
+$ sudo apt-get install ros-kinetic-desktop-full
+```
+```bash
+$ sudo rosdep init
+$ rosdep update
+```
+```bash
+$ echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+$ source ~/.bashrc
+```
 
-_В_ _процессе_ - скрипт для управления роботами
+### 2. Install Gazebo
 
-***
+```bash
+$ sudo apt-get install ros-kinetic-gazebo-ros-pkgs ros-kinetic-gazebo-ros-control
+```
 
-Для запуска необходимо:
+### 3. Install turtlebot packages
 
-	- установить библиотеку stringtemplate3 (требуется для работы генератора): в окне терминала выполнить команду ```pip install stringtemplate3```
-	- положить данные из репозитория в домашнюю папку пользователя
-	- в удобную директорию положить `run.sh` и предоставить права на запуск (`chmod u+x *[directory]/run.sh`)
-
-***
-	
-**ГЕНЕРАЦИЯ ОКРУЖЕНИЯ И РАССТАНОВКА РОБОТОВ В СТАРТОВЫЕ ПОЗИЦИИ**
------------------------------------------------------------------------------------------------------
-
-#Для совершения генерации нужно последовательно совершить ряд действий:
-
-	1)Положить логи по пути: `~/catkin_ws/src/gazebo/input`
-	2) запустить `generate.sh` из директории `~/catkin_ws`
-	3) скрипт запросит название .xml файла. Вводить нужно полное имя файла без кавычек. 
-
-Скрипт сгенерирует файлы: `playground.world`, `turtlebot_world.launch`, список .csv файлов,
-каждый из которых хранит список команд для одного агента, `run_agents.sh` - нужен для реализации передвижения агентов.
-
-файлы можно найти в соотвествующих вложенных директориях в catkin_ws
-
-После данных манипуляций можно запустить `./run.sh`
-
-Важно: замечено, что иногда Gazebo не может запуститься правильно. Терминал уведомит об этом , сообщив: ```[gazebo-2] process has died..```
-В случае возникновения - нужно убить Gazebo (Ctrl+C в этом окне терминала) и запустить ее снова. Возможно неоднократное появление ошибки. В случае, если при запуске загрузился старый .launch - `killall gzserver`.
-
-В зависимости от количества роботов будет отличаться как время запуска Gazebo, так и скорость работы в целом.
-**Не рекомендуется пытаться визуализировать 64 агентов на слабой машине**
-
-***
-**ЗАПУСК АГЕНТОВ:**
-------------------------------------------------------------------------------------------------------
-
-_будет_ _заполнено_ _позже_
+```bash
+$ sudo apt install ros-kinetic-turtlebot
+```
 
 
+### 4. Initialize catkin workspace
+
+```bash
+$ mkdir -p {custom_path}/catkin_ws/src
+$ cd {custom_path}/catkin_ws/
+$ catkin_make
+```
+```bash
+$ echo "source {path_to_catkin_ws}/devel/setup.bash" >> ~/.bashrc
+$ source ~/.bashrc
+```
+
+
+# Setting up pathplanning_simulation prerequisites
+
+### stringtemplate3
+
+```bash
+$ sudo apt install python-stringtemplate3
+```
+
+### Antlr
+
+```bash
+$ sudo apt install python-antlr
+```
+
+# Compile pathplanning_simulation
+
+### Optional: Install git
+
+```bash
+$ sudo apt install git
+```
+
+### Clone and compile repository
+
+```bash
+$ cd {path_to_your_catkin_workspace}/src
+$ git clone https://github.com/PathPlanning/MultiRobotPathFinding-ROS-Gazebo-Demo.git
+$ cd ..
+$ catkin_make
+```
+
+# Run
+
+1) Generate world and launch files
+
+```bash
+$ roslaunch pathplanning_generator generate_world.launch
+$ Ctrl+c
+```
+
+2) Run simulation 
+
+```bash
+$ roslaunch pathplanning_gazebo turtlebot_world.launch
+```
+
+3)
+
+3.1) Run pathplanning_mover2 (need to test)
+
+```bash
+$ rosrun pathplanning_mover2 mover2.py {agent number} {cellsize} (eg ...mover2.py 4 1.5
+```
+3.2) Run full simulation (need to test)
+
+``` bash
+$ ~/{path_to_your_catkin_workspace}/src/run_agents.sh
+```
