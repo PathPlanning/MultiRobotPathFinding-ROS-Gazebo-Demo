@@ -64,7 +64,7 @@ def generate_launch():
         for section in child.findall('./path/hplevel/section'):
             section_starty = section.get('start.y')
             section_startx = section.get('start.x')
-            section_length = section.get('length')
+            section_length = float(section.get('length'))  * cellsize / speed
             section_finishy = section.get('finish.y')
             section_finishx = section.get('finish.x')
             params.append({"startx": section_startx,
@@ -132,6 +132,7 @@ text = ''
 width = int(root.find('map/width').text)
 height = int(root.find('map/height').text)
 cellsize = float(root.find('map/cellsize').text)
+speed = float(root.find('map/speed').text)
 
 agents = root.find('map/agents').text
 print ('XML file contains ' + agents + ' agents')
