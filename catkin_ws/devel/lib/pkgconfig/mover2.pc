@@ -1,8 +1,0 @@
-prefix=/home/sergey/catkin_ws/devel
-
-Name: mover2
-Description: Description of mover2
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/sergey/catkin_ws/devel/lib 
-Requires: 
