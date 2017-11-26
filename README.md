@@ -1,6 +1,7 @@
 **pathplanning_simulation**
 ================================================================================================================================
 # Installing prerequisites
+	you can use the install_ros_gazebo.sh. In that case you have to skip 3 upper steps.
 
 ### 1. Install ROS Kinetic
 
@@ -99,13 +100,6 @@ $ roslaunch pathplanning_gazebo turtlebot_world.launch
 
 3)
 
-3.1) Run pathplanning_mover2 (need to test)
-
 ```bash
-$ rosrun pathplanning_mover2 mover2.py {agent number} {cellsize} (eg ...mover2.py 4 1.5
-```
-3.2) Run full simulation (need to test)
-
-``` bash
-$ ~/{path_to_your_catkin_workspace}/src/run_agents.sh
+$ roslaunch pathplanning_mover2 run_agents.launch **need to test**
 ```

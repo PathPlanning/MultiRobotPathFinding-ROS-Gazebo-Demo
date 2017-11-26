@@ -128,9 +128,7 @@ class mover:
         try:
             with open(directory, "r") as f:
                 reader = csv.reader(f)
-                # Храним предыдущий вектор для того, чтобы вычислить угол.
-                # Задаем изначальный, чтобы вычислить угол относительно оси X
-                prev_row = ["0", "0", "0", "0"]
+                print "readed"
                 for row in reader:
                     v1 = np.array([(int(row[2]) - int(row[0]) * self.cellsize + self.cellsize / 2),
                                    (int(row[3]) - int(row[1])) * self.cellsize + self.cellsize / 2])
@@ -139,7 +137,6 @@ class mover:
                          (int(row[3]) - int(row[1])) * self.cellsize + self.cellsize / 2])
                     alpha = self.py_ang(v1, v2)  # угол
                     vector_length = la.norm(v2)  # длина вектора передвижения
-                    # prev_row = row
                     commands.append([alpha, vector_length,
                                      int(row[0]) * self.cellsize + self.cellsize / 2,
                                      int(row[1]) * self.cellsize + self.cellsize / 2,
@@ -158,6 +155,7 @@ class mover:
         self.pose = Pose()
         self.state = ModelState()
         self.robot = str(robot)
+        print cellsize
         self.cellsize = float(cellsize)
         self.time = 0.0
         for command in self.readfile():
@@ -178,8 +176,8 @@ class mover:
 
 
 if __name__ == '__main__':
-    rospy.init_node('move_robot_' + sys.argv[1])
+    rospy.init_node('move_robot')
     try:
-        mover(sys.argv[1], sys.argv[2])
+        mover(rospy.get_param("~name"), rospy.get_param("~cellsize"))
     except rospy.ROSInterruptException:
         pass

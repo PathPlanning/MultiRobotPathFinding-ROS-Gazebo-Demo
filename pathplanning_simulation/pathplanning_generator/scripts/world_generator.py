@@ -90,22 +90,21 @@ def generate_launch():
         st = os.stat(commands_path + "/../run.sh")
         os.chmod(commands_path + "/../run.sh", st.st_mode | stat.S_IEXEC)
     print(
-        'turtlebot_world.launch has been generated successfully\n'
-        'Now you can run it by \"./run_robots.sh\"\n')
+        'turtlebot_world.launch has been generated successfully\n')
 
 
 # Генерация run_agents.sh для запуска пачки агентов
-def generate_sh():
-    sh_string = 'source ~/catkin_ws/devel/setup.bash \n'
+def generate_robots_launch():
+    launch_string_header = '<?xml version="1.0"?>\n<launch>'
+    launch_string_footer = '\n</launch>'
+    node_string = ''
     for i in range(len(robots)):
-        sh_string += "rosrun pathplanning_mover2 mover2.py " + str(i) + " " + str(cellsize) + " & \n"
+        node_string += '\n  <node name="$(anon robot_%s)" pkg="pathplanning_mover2" type="mover.py" output="screen">\n  </node>' % i
+    launch_string_header = launch_string_header + node_string + launch_string_footer
+    with open(os.path.join(commands_path, "../run_agents.launch"), "w") as run:
+        run.write(launch_string_header)
 
-    with open(os.path.join(commands_path, "../run_agents.sh"), "w") as run:
-        run.write(sh_string)
-        st = os.stat(commands_path + "/../run_agents.sh")
-        os.chmod(commands_path + "/../run_agents.sh", st.st_mode | stat.S_IEXEC)
-
-    print("run_agents.sh has been generated successfully in \"~/catkin_ws/src/pathplanning_simulation\" directory")
+    print("run_agents.launch has been generated successfully in \"~/catkin_ws/src/pathplanning_simulation\" directory")
 
 rospy.init_node('pathplanning_generator')
 ros_package = rospkg.RosPack()
@@ -141,4 +140,4 @@ generate_world()
 
 generate_launch()
 
-generate_sh()
+generate_robots_launch()
