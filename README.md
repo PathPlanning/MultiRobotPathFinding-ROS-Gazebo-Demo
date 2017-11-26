@@ -1,7 +1,7 @@
 **pathplanning_simulation**
 ================================================================================================================================
 # Installing prerequisites
-	you can use the install_ros_gazebo.sh. In that case you have to skip 3 upper steps.
+	you can use the install_ros_gazebo.sh. In that case you have to skip 3 upper steps and installing required python libraries.
 
 ### 1. Install ROS Kinetic
 

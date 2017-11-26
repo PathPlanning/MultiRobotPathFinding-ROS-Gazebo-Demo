@@ -19,9 +19,13 @@ echo Now installing Gazebo
 sudo apt-get install ros-kinetic-gazebo-ros-pkgs ros-kinetic-gazebo-ros-control
 
 
-# installikn Turtlebot packages
+# installing Turtlebot packages
 echo Now installing Turtlebot packages
 sudo apt install ros-kinetic-turtlebotsudo apt install ros-kinetic-turtlebot
+
+echo Now installing some libraries for make generator work
+sudo apt install python_stringtemplate3
+sudo apt install python-antlr
 
 echo "----------------------------------------------"
 echo "----------------------------------------------"
