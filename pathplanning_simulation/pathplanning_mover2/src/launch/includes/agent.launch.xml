@@ -1,6 +1,8 @@
 <launch>
   <arg name="name" default="0"/>
   <arg name="cellsize" default="1"/>
-  <node name="$(anon robot_$(arg name)" pkg="pathplanning_mover2" type="mover.py" output="screen">
+  <node name="$(anon move_robot)" pkg="pathplanning_mover2" type="mover.py" output="screen">
+	<param name = "name" value = "$(arg name)"/>
+	<param name = "cellsize" value = "$(arg cellsize)"/>
   </node>
 </launch>
