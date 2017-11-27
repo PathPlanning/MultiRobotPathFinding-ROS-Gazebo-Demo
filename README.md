@@ -101,5 +101,5 @@ $ roslaunch pathplanning_gazebo turtlebot_world.launch
 3)
 
 ```bash
-$ roslaunch pathplanning_mover2 run_agents.launch **need to test**
+$ roslaunch pathplanning_mover2 run_agents.launch
 ```

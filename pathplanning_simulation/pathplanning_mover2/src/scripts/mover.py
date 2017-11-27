@@ -23,8 +23,8 @@ import timeit
 
 
 class mover:
-    def euler_to_quaternion(self, yaw):
-        quaternion = tf.transformations.quaternion_from_euler(0, 0, yaw)
+    def turn_robot_around(self, yaw):
+        quaternion = tf.transformations.turn_robot_around(0, 0, -yaw)
         self.pose.orientation.x = quaternion[0]
         self.pose.orientation.y = quaternion[1]
         self.pose.orientation.z = quaternion[2]
@@ -125,11 +125,10 @@ class mover:
                 reader = csv.reader(f)
                 print "readed"
                 for row in reader:
-                    v1 = np.array([(int(row[2]) - int(row[0]) * self.cellsize + self.cellsize / 2),
-                                   (int(row[3]) - int(row[1])) * self.cellsize + self.cellsize / 2])
-                    v2 = np.array(
-                        [0 * self.cellsize + self.cellsize / 2,
-                         0 * self.cellsize + self.cellsize / 2])
+                    v1 = np.array([int(row[2]) - int(row[0]) ,
+                                   int(row[3]) - int(row[1])])
+                    # negative x axis
+                    v2 = np.array([-1 , 0])
                     alpha = self.py_ang(v1, v2)  # угол
                     vector_length = la.norm(v2)  # длина вектора передвижения
                     commands.append([alpha, vector_length,
@@ -142,6 +141,7 @@ class mover:
         return commands
 
     def __init__(self, robot, cellsize):
+
         self.g_pause = rospy.ServiceProxy("/gazebo/pause_physics", EmptySrv)
         self.g_unpause = rospy.ServiceProxy("/gazebo/unpause_physics", EmptySrv)
         self.g_set_state = rospy.ServiceProxy("/gazebo/set_model_state", SetModelState)
@@ -159,7 +159,7 @@ class mover:
             coords = self.calculate_coords(command)
             print 'coordinates: ' + str(coords)
             if len(coords) != 0:
-                self.euler_to_quaternion(command[0])
+                self.turn_robot_around(command[0])
                 self.move_forward(coords, self.time)
             else:
                 rospy.sleep(command[6])
