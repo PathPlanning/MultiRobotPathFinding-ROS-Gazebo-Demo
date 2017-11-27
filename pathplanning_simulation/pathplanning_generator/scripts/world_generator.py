@@ -93,15 +93,15 @@ def generate_launch():
         'turtlebot_world.launch has been generated successfully\n')
 
 
-# Генерация run_agents.sh для запуска пачки агентов
+# Генерация run_agents.launch для запуска пачки агентов
 def generate_robots_launch():
-    launch_string_header = '<?xml version="1.0"?>\n<launch>'
+    launch_string_header = '<launch>'
     launch_string_footer = '\n</launch>'
     node_string = ''
     for i in range(len(robots)):
-        node_string += '\n  <node name="$(anon robot_%s)" pkg="pathplanning_mover2" type="mover.py" output="screen">\n  </node>' % i
+        node_string += '\n  <include file="$(find pathplanning_mover2)/src/launch/includes/agent.launch.xml">\n  <arg name="name" value = "%s"/>\n  <arg name="cellsize" value = "%s"/>\n </include>' % (i, cellsize)
     launch_string_header = launch_string_header + node_string + launch_string_footer
-    with open(os.path.join(commands_path, "../run_agents.launch"), "w") as run:
+    with open(os.path.join(commands_path, "src/launch/run_agents.launch"), "w") as run:
         run.write(launch_string_header)
 
     print("run_agents.launch has been generated successfully in \"~/catkin_ws/src/pathplanning_simulation\" directory")
