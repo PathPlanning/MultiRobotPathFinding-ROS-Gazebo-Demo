@@ -30,15 +30,14 @@ class mover:
         self.pose.orientation.z = quaternion[2]
         self.pose.orientation.w = quaternion[3]
 
-    def move_forward(self, array_of_coords, angle, time):
-        if (array_of_coords == []):
+    def move_forward(self, array_of_coords, time):
+        if (len(array_of_coords) == 0):
             return
         for element in array_of_coords:
             exectime = timeit.default_timer()
             print element
             self.pose.position.x = element[0]
             self.pose.position.y = element[1]
-            self.euler_to_quaternion(angle)
             self.state.model_name = "robot_" + self.robot
             self.state.pose = self.pose
             # rospy.loginfo("Moving robot")
@@ -60,8 +59,6 @@ class mover:
             rospy.sleep(time / (len(array_of_coords) - (timeit.default_timer() - exectime)))
             print (time / (len(array_of_coords) - (timeit.default_timer() - exectime)))
             print time
-        print time
-        rospy.sleep(1)
 
     def calculate_coords(self, command):
         # находим k и x для формулы линейного уравнения y = kx +b
@@ -123,8 +120,6 @@ class mover:
         mover_directory = ros_package.get_path("pathplanning_mover2")
         directory = os.path.join(mover_directory, "src/commands/", self.robot + '.csv')
         print directory
-        # Tут почему-то падает без исключительных ситуаций. Работало раньше.
-        # Нужно детальное тестирование.
         try:
             with open(directory, "r") as f:
                 reader = csv.reader(f)
@@ -133,8 +128,8 @@ class mover:
                     v1 = np.array([(int(row[2]) - int(row[0]) * self.cellsize + self.cellsize / 2),
                                    (int(row[3]) - int(row[1])) * self.cellsize + self.cellsize / 2])
                     v2 = np.array(
-                        [(int(row[2]) - int(row[0])) * self.cellsize + self.cellsize / 2,
-                         (int(row[3]) - int(row[1])) * self.cellsize + self.cellsize / 2])
+                        [0 * self.cellsize + self.cellsize / 2,
+                         0 * self.cellsize + self.cellsize / 2])
                     alpha = self.py_ang(v1, v2)  # угол
                     vector_length = la.norm(v2)  # длина вектора передвижения
                     commands.append([alpha, vector_length,
@@ -164,9 +159,10 @@ class mover:
             coords = self.calculate_coords(command)
             print 'coordinates: ' + str(coords)
             if len(coords) != 0:
-                self.move_forward(coords, command[0], self.time)
+                self.euler_to_quaternion(command[0])
+                self.move_forward(coords, self.time)
             else:
-                rospy.sleep(self.time)
+                rospy.sleep(command[6])
         if sim is True:
             rospy.loginfo('Simulation is completely ready, publishing to /sim_init topic')
 
