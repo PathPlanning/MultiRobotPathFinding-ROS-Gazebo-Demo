@@ -31,35 +31,29 @@ class mover:
         self.pose.orientation.z = quaternion[2]
         self.pose.orientation.w = quaternion[3]
 
+    """Для отладки раскомментировать строки 39, 55, 56"""
+
     def move_forward(self, array_of_coords, time):
         if (len(array_of_coords) == 0):
             return
+        # extime = timeit.default_timer()
         for element in array_of_coords:
-            exectime = timeit.default_timer()
+            exectime = timeit.default_timer()  # для уменьшения погрешности во времени выполнения
             print element
             self.pose.position.x = element[0]
             self.pose.position.y = element[1]
             self.state.model_name = "robot_" + self.robot
             self.state.pose = self.pose
-            # rospy.loginfo("Moving robot")
-            try:
-                ret = self.g_set_state(self.state)
-                print ret.status_message
-            except Exception, e:
-                rospy.logerr('Error on calling service: %s', str(e))
-            rospy.loginfo("Unpausing physics")
-            # try:
-            #     self.g_unpause()
-            # except Exception, e:
-            #     self.rospy.logerr('Error on calling service: %s', str(e))
-            self.loc = PoseWithCovarianceStamped()
-            self.loc.pose.pose = self.pose
-            self.loc.header.frame_id = "/map"
-            rospy.loginfo("Adjusting localization")
-            self.pub.publish(self.loc)
-            rospy.sleep(time / (len(array_of_coords) - (timeit.default_timer() - exectime)))
+            self.pub.publish(self.state)
+            # для организации равномерного движения заставляем rospy спать каждую итерацию
+            # время сна = время на команду / количество промежуточных точек
+            # для более точного рассчета вычитаем из времени сна, выделенного на одну итерацию цикла
+            # время, которое заняли команды этой итерации.
+            # Отправка в топик занимает большую часть времени
+            rospy.sleep(time / (len(array_of_coords)) - (timeit.default_timer() - exectime))
             print (time / (len(array_of_coords) - (timeit.default_timer() - exectime)))
-            print time
+            # print("Executed in: " + str(timeit.default_timer() - extime))
+            # rospy.sleep(5)
 
     def calculate_coords(self, command):
         # находим k и x для формулы линейного уравнения y = kx +b
@@ -67,20 +61,21 @@ class mover:
         x_coords, y_coords = zip(*points)
         A = vstack([x_coords, ones(len(x_coords))]).T
         m, c = lstsq(A, y_coords)[0]
+        delta = 0.02  # тут можно редактировать
         # если стартовые позиции численно больше конечных - нам нужно двигаться влево или вниз
         if command[2] > command[4]:
-            deltax = -0.02
+            deltax = -delta
         elif command[2] < command[4]:
-            deltax = 0.02
+            deltax = delta
         # delta нельзя присвоить 0, тк итератор должен быть ненулевым числом
         else:
-            deltax = 0.02
+            deltax = delta
         if command[3] > command[5]:
-            deltay = -0.02
+            deltay = -delta
         elif command[3] < command[5]:
-            deltay = 0.02
+            deltay = delta
         else:
-            deltay = 0.02
+            deltay = delta
         array_of_coords = []
         x = command[2]
         y = command[3]
@@ -100,14 +95,6 @@ class mover:
                 array_of_coords.append([x, y])
         print array_of_coords
         return array_of_coords
-
-    # def calculate_angle(self, radians):
-    #     if radians == 0:
-    #         return
-    #     else:
-    #         rads =self.angle_to_quaternion(radians)
-    #         return rads
-
 
     def py_ang(self, v1, v2):
         """ Returns the angle in radians between vectors 'v1' and 'v2'    """
@@ -136,17 +123,15 @@ class mover:
                                      int(row[0]) * self.cellsize + self.cellsize / 2,
                                      int(row[1]) * self.cellsize + self.cellsize / 2,
                                      int(row[2]) * self.cellsize + self.cellsize / 2,
-                                     int(row[3]) * self.cellsize + self.cellsize / 2, float(row[4])])
+                                     int(row[3]) * self.cellsize + self.cellsize / 2,
+                                     float(row[4])])
         except Exception as e:
             print e.message
         return commands
 
     def __init__(self, robot, cellsize):
 
-        self.g_pause = rospy.ServiceProxy("/gazebo/pause_physics", EmptySrv)
-        self.g_unpause = rospy.ServiceProxy("/gazebo/unpause_physics", EmptySrv)
-        self.g_set_state = rospy.ServiceProxy("/gazebo/set_model_state", SetModelState)
-        self.pub = rospy.Publisher("/initialpose", PoseWithCovarianceStamped, latch=True)
+        self.pub = rospy.Publisher("/gazebo/set_model_state", ModelState, latch=True)
         sim = rospy.get_param('/use_sim_time')
         self.pose = Pose()
         self.state = ModelState()
