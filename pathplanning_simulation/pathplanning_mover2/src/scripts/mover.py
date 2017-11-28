@@ -7,9 +7,7 @@ import tf
 from std_srvs.srv import Empty as EmptySrv
 from geometry_msgs.msg import Pose
 from geometry_msgs.msg import Quaternion
-from gazebo_msgs.srv import SetModelState
 from gazebo_msgs.msg import ModelState
-from geometry_msgs.msg import PoseWithCovarianceStamped
 from std_msgs.msg import Empty as EmptyMsg
 import sys
 import os
@@ -31,7 +29,7 @@ class mover:
         self.pose.orientation.z = quaternion[2]
         self.pose.orientation.w = quaternion[3]
 
-    """Для отладки раскомментировать строки 39, 55, 56"""
+    """Для отладки раскомментировать строки 37, 52, 53"""
 
     def move_forward(self, array_of_coords, time):
         if (len(array_of_coords) == 0):
@@ -51,7 +49,6 @@ class mover:
             # время, которое заняли команды этой итерации.
             # Отправка в топик занимает большую часть времени
             rospy.sleep(time / (len(array_of_coords)) - (timeit.default_timer() - exectime))
-            print (time / (len(array_of_coords) - (timeit.default_timer() - exectime)))
             # print("Executed in: " + str(timeit.default_timer() - extime))
             # rospy.sleep(5)
 
