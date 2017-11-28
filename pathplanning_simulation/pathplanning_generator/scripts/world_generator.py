@@ -104,7 +104,7 @@ def generate_robots_launch():
     with open(os.path.join(commands_path, "src/launch/run_agents.launch"), "w") as run:
         run.write(launch_string_header)
 
-    print("run_agents.launch has been generated successfully in \"~/catkin_ws/src/pathplanning_simulation\" directory")
+    print("run_agents.launch has been generated successfully in \"~/catkin_ws/src/pathplanning_simulation/pathplanning_mover2/src/launch\" directory")
 
 rospy.init_node('pathplanning_generator')
 ros_package = rospkg.RosPack()
