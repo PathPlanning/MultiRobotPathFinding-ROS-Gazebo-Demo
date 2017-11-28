@@ -1,7 +1,7 @@
 **pathplanning_simulation**
 ================================================================================================================================
 # Installing prerequisites
-	you can use the install_ros_gazebo.sh. In that case you have to skip 3 upper steps and installing required python libraries.
+	First of all, you can use the install_ros_gazebo.sh. In that case you have to download it separately, skip 3 upper steps and skip installing required python libraries.
 
 ### 1. Install ROS Kinetic
 
@@ -42,6 +42,9 @@ $ sudo apt install ros-kinetic-turtlebot
 ### 4. Initialize catkin workspace
 
 ```bash
+$ cd {custom_path}/catkin_ws/src
+$ catkin_init_workspace
+$ cd ..
 $ mkdir -p {custom_path}/catkin_ws/src
 $ cd {custom_path}/catkin_ws/
 $ catkin_make
