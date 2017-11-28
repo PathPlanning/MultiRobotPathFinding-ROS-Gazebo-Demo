@@ -87,8 +87,6 @@ def generate_launch():
     with open(os.path.join(generated_base_path, "launch", "turtlebot_world.launch"), "w") as launch:
         string = head + '\n' + launch_preset.toString() + '\n' + bottom
         launch.write(string)
-        st = os.stat(commands_path + "/../run.sh")
-        os.chmod(commands_path + "/../run.sh", st.st_mode | stat.S_IEXEC)
     print(
         'turtlebot_world.launch has been generated successfully\n')
 
