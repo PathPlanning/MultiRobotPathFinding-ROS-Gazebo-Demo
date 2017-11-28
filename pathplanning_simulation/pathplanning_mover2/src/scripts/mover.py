@@ -24,7 +24,8 @@ import timeit
 
 class mover:
     def turn_robot_around(self, yaw):
-        quaternion = tf.transformations.turn_robot_around(0, 0, -yaw)
+        yaw = -yaw
+        quaternion = tf.transformations.quaternion_from_euler(0, 0, -yaw)
         self.pose.orientation.x = quaternion[0]
         self.pose.orientation.y = quaternion[1]
         self.pose.orientation.z = quaternion[2]
@@ -125,10 +126,10 @@ class mover:
                 reader = csv.reader(f)
                 print "readed"
                 for row in reader:
-                    v1 = np.array([int(row[2]) - int(row[0]) ,
+                    v1 = np.array([int(row[2]) - int(row[0]),
                                    int(row[3]) - int(row[1])])
                     # negative x axis
-                    v2 = np.array([-1 , 0])
+                    v2 = np.array([-1, 0])
                     alpha = self.py_ang(v1, v2)  # угол
                     vector_length = la.norm(v2)  # длина вектора передвижения
                     commands.append([alpha, vector_length,
