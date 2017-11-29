@@ -48,7 +48,7 @@ class mover:
             # для более точного рассчета вычитаем из времени сна, выделенного на одну итерацию цикла
             # время, которое заняли команды этой итерации.
             # Отправка в топик занимает большую часть времени
-            rospy.sleep(time / len(array_of_coords)) - (timeit.default_timer() - exectime)
+            rospy.sleep(float(time / len(array_of_coords)) - (timeit.default_timer() - exectime))
             # print("Executed in: " + str(timeit.default_timer() - extime))
             # rospy.sleep(5)
 
